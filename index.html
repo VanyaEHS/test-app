@@ -5,118 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Двери для дома и офиса</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root {
-      --red: #b3221c;
-      --dark: #1d1f23;
-      --light: #f4f4f4;
-      --text: #222;
-      --muted: #666;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #fff;
-      color: var(--text);
-    }
-    header {
-      background: var(--dark);
-      color: #fff;
-      padding: 16px;
-      text-align: center;
-    }
-    header .brand { font-weight: bold; letter-spacing: 1px; }
-    header .sub { font-size: 12px; color: #bbb; margin-top: 4px; }
-    .hero {
-      background: linear-gradient(135deg, #2b2e35, #111);
-      color: #fff;
-      padding: 28px 16px;
-      text-align: center;
-    }
-    .hero h1 {
-      margin: 0;
-      font-size: 34px;
-      color: #fff;
-    }
-    .hero .model {
-      display: inline-block;
-      margin-top: 6px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #fff;
-      border-bottom: 3px solid var(--red);
-      padding-bottom: 2px;
-    }
-    .hero p { color: #ccc; font-size: 14px; margin: 14px 0 0; }
-    .section {
-      padding: 16px;
-    }
-    .card {
-      background: var(--light);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 18px;
-      color: var(--red);
-      text-transform: uppercase;
-    }
-    .spec {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 8px 0;
-      border-bottom: 1px solid #ddd;
-      font-size: 14px;
-    }
-    .spec:last-child { border-bottom: none; }
-    .spec span:first-child { color: var(--muted); }
-    .spec span:last-child { font-weight: bold; text-align: right; }
-    .included li {
-      margin: 6px 0;
-      font-size: 14px;
-    }
-    .included ul { padding-left: 18px; margin: 0; }
-    .price {
-      font-size: 22px;
-      font-weight: bold;
-      color: var(--dark);
-      margin: 8px 0 0;
-    }
-    button {
-      width: 100%;
-      background: var(--red);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 16px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:active { opacity: 0.85; }
-    .note {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-      margin-top: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
   <header>
     <div class="brand">ДВЕРИ ДЛЯ ДОМА И ОФИСА</div>
-    <div class="sub">Особое внимание к деталям</div>
+    <div class="sub">Особое внимание<br>к деталям</div>
   </header>
 
   <section class="hero">
-    <h1>КВАРТИРНАЯ ДВЕРЬ</h1>
-    <span class="model">ХИТ-С</span>
+    <p class="kicker">КВАРТИРНАЯ ДВЕРЬ</p>
+    <h1>ХИТ-С</h1>
+    <span class="model"></span>
     <p>стиль • безопасность • надёжность</p>
+    <img src="door.jpg" alt="Квартирная дверь ХИТ-С" class="door-img">
   </section>
 
   <div class="section">
@@ -126,7 +29,7 @@
       <div class="spec"><span>Толщина металла полотна/короба</span><span>1,2/1,2 мм</span></div>
       <div class="spec"><span>Уплотнитель</span><span>2 контура</span></div>
       <div class="spec"><span>Толщина короба/полотна</span><span>94/80 мм</span></div>
-      <div class="spec"><span>Покраска</span><span>антик, шагрень, муар, букле</span></div>
+      <div class="spec"><span>Покраска (тип краски)</span><span>антик, шагрень, муар, букле</span></div>
       <div class="spec"><span>Внешняя отделка</span><span>металл</span></div>
       <div class="spec"><span>Внутренняя отделка</span><span>МДФ 6 мм ФЛ</span></div>
       <div class="spec"><span>Наполнение полотна/короба</span><span>мин. вата/мин. вата</span></div>
@@ -142,28 +45,129 @@
     </div>
 
     <div class="card">
-      <h2>Стоимость</h2>
-      <p class="price">от 45 000 ₽</p>
-      <p class="note">Точная цена зависит от размеров и отделки. Оставьте заявку, и мы подготовим коммерческое предложение.</p>
+      <h2>Настройте дверь</h2>
+      <div class="field">
+        <label for="metal">Толщина металла полотна/короба</label>
+        <select id="metal"></select>
+      </div>
+      <div class="field">
+        <label for="box">Толщина короба/полотна</label>
+        <select id="box"></select>
+      </div>
+      <div class="field">
+        <label for="paint">Покраска (тип краски)</label>
+        <select id="paint"></select>
+      </div>
+      <div class="field">
+        <label for="fill">Наполнение полотна/короба</label>
+        <select id="fill"></select>
+      </div>
+      <div class="field">
+        <label for="hardware">Фурнитура</label>
+        <select id="hardware"></select>
+      </div>
+      <div class="field">
+        <label for="lock">Замок</label>
+        <select id="lock"></select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ваш выбор</h2>
+      <div id="summary"></div>
+    </div>
+
+    <div class="features">
+      <div>Современные решения</div>
+      <div>Гарантия качества</div>
+      <div>Стильный внешний вид</div>
     </div>
 
     <button id="order">Получить коммерческое предложение</button>
-    <p class="note">Мы свяжемся с вами и уточним замер</p>
+    <p class="note">Оставьте заявку, и мы подготовим индивидуальное КП с учётом ваших потребностей и объёмов.</p>
+  </div>
+
+  <div class="disclaimer">
+    Информация носит ознакомительный характер и не является публичной офертой. Для получения актуальной информации по ценам и характеристикам обратитесь к менеджеру.
   </div>
 
   <script>
+    // Варианты выбора. Список можно менять под свои позиции.
+    const OPTIONS = {
+      metal: {
+        label: 'Толщина металла полотна/короба',
+        values: ['1,2/1,2 мм', '1,5/1,2 мм', '1,5/1,5 мм']
+      },
+      box: {
+        label: 'Толщина короба/полотна',
+        values: ['94/80 мм', '100/80 мм', '100/90 мм']
+      },
+      paint: {
+        label: 'Покраска (тип краски)',
+        values: ['антик', 'шагрень', 'муар', 'букле']
+      },
+      fill: {
+        label: 'Наполнение полотна/короба',
+        values: ['мин. вата/мин. вата', 'мин. вата/ЛДСП']
+      },
+      hardware: {
+        label: 'Фурнитура',
+        values: ['чёрная', 'хром', 'хром сатин']
+      },
+      lock: {
+        label: 'Замок (основной/дополнительный)',
+        values: [
+          'Гардиан 3211 / Гардиан 3001',
+          'Гардиан 3211 / Гардиан 3211',
+          'Гардиан 3001 / Гардиан 3001'
+        ]
+      }
+    };
+
     const tg = window.Telegram && window.Telegram.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
     }
 
+    const selection = {};
+    for (const key in OPTIONS) {
+      const select = document.getElementById(key);
+      OPTIONS[key].values.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = v;
+        select.appendChild(opt);
+      });
+      selection[key] = OPTIONS[key].values[0];
+      select.addEventListener('change', () => {
+        selection[key] = select.value;
+        renderSummary();
+      });
+    }
+
+    function renderSummary() {
+      const box = document.getElementById('summary');
+      box.innerHTML = '';
+      for (const key in OPTIONS) {
+        const row = document.createElement('div');
+        row.className = 'spec';
+        const name = document.createElement('span');
+        const value = document.createElement('span');
+        name.textContent = OPTIONS[key].label;
+        value.textContent = selection[key];
+        row.append(name, value);
+        box.appendChild(row);
+      }
+    }
+    renderSummary();
+
     document.getElementById('order').addEventListener('click', () => {
-      const data = JSON.stringify({ action: 'order', product: 'ХИТ-С' });
+      const payload = { action: 'order', product: 'ХИТ-С', options: selection };
       if (tg && tg.sendData) {
-        tg.sendData(data);
+        tg.sendData(JSON.stringify(payload));
       } else {
-        alert('Заявка отправлена (тестовый режим)');
+        alert('Заявка (тестовый режим):\n' + JSON.stringify(selection, null, 2));
       }
     });
   </script>
