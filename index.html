@@ -3,14 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Двери</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Адрес https://telegram.org/js/telegram-web-app.js — официальный скрипт Telegram. Он даёт странице объект Telegram.WebApp-->
+  <title>Двери для дома и офиса</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --red: #b3221c;
+      --dark: #1d1f23;
+      --light: #f4f4f4;
+      --text: #222;
+      --muted: #666;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff;
+      color: var(--text);
+    }
+    header {
+      background: var(--dark);
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+    }
+    header .brand { font-weight: bold; letter-spacing: 1px; }
+    header .sub { font-size: 12px; color: #bbb; margin-top: 4px; }
+    .hero {
+      background: linear-gradient(135deg, #2b2e35, #111);
+      color: #fff;
+      padding: 28px 16px;
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 34px;
+      color: #fff;
+    }
+    .hero .model {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+      border-bottom: 3px solid var(--red);
+      padding-bottom: 2px;
+    }
+    .hero p { color: #ccc; font-size: 14px; margin: 14px 0 0; }
+    .section {
+      padding: 16px;
+    }
+    .card {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: var(--red);
+      text-transform: uppercase;
+    }
+    .spec {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+    .spec:last-child { border-bottom: none; }
+    .spec span:first-child { color: var(--muted); }
+    .spec span:last-child { font-weight: bold; text-align: right; }
+    .included li {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+    .included ul { padding-left: 18px; margin: 0; }
+    .price {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--dark);
+      margin: 8px 0 0;
+    }
+    button {
+      width: 100%;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:active { opacity: 0.85; }
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
-<body style="font-family: sans-serif; padding: 20px;"> 
-  <h1>Двери для дома и офисауфу</h1>
-  <p>Тестовая страница мини-приложения.</p>
+<body>
+
+  <header>
+    <div class="brand">ДВЕРИ ДЛЯ ДОМА И ОФИСА</div>
+    <div class="sub">Особое внимание к деталям</div>
+  </header>
+
+  <section class="hero">
+    <h1>КВАРТИРНАЯ ДВЕРЬ</h1>
+    <span class="model">ХИТ-С</span>
+    <p>стиль • безопасность • надёжность</p>
+  </section>
+
+  <div class="section">
+
+    <div class="card">
+      <h2>Базовая комплектация</h2>
+      <div class="spec"><span>Толщина металла полотна/короба</span><span>1,2/1,2 мм</span></div>
+      <div class="spec"><span>Уплотнитель</span><span>2 контура</span></div>
+      <div class="spec"><span>Толщина короба/полотна</span><span>94/80 мм</span></div>
+      <div class="spec"><span>Покраска</span><span>антик, шагрень, муар, букле</span></div>
+      <div class="spec"><span>Внешняя отделка</span><span>металл</span></div>
+      <div class="spec"><span>Внутренняя отделка</span><span>МДФ 6 мм ФЛ</span></div>
+      <div class="spec"><span>Наполнение полотна/короба</span><span>мин. вата/мин. вата</span></div>
+      <div class="spec"><span>Фурнитура</span><span>чёрная, хром, хром сатин</span></div>
+    </div>
+
+    <div class="card included">
+      <h2>Включено в комплект</h2>
+      <ul>
+        <li>Замок основной и дополнительный: 2 шт.</li>
+        <li>Гардиан 3211 и Гардиан 3001</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Стоимость</h2>
+      <p class="price">от 45 000 ₽</p>
+      <p class="note">Точная цена зависит от размеров и отделки. Оставьте заявку, и мы подготовим коммерческое предложение.</p>
+    </div>
+
+    <button id="order">Получить коммерческое предложение</button>
+    <p class="note">Мы свяжемся с вами и уточним замер</p>
+  </div>
+
   <script>
-    Telegram.WebApp.ready();     //это надо
+    const tg = window.Telegram && window.Telegram.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    document.getElementById('order').addEventListener('click', () => {
+      const data = JSON.stringify({ action: 'order', product: 'ХИТ-С' });
+      if (tg && tg.sendData) {
+        tg.sendData(data);
+      } else {
+        alert('Заявка отправлена (тестовый режим)');
+      }
+    });
   </script>
 </body>
 </html>
