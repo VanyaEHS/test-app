@@ -45,3 +45,6 @@ select { font-size: 14px; padding: 10px; border: 1px solid #bbb; border-radius: 
 .totalbar .sum { font-size: 20px; font-weight: 800; }
 
 footer { background: var(--dark); color: #ddd; text-align: center; padding: 24px; font-size: 13px; }
+
+.door-photo-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 24px 0; }
+.door-photo { display: block; width: 100%; height: auto; border-radius: 10px; }
