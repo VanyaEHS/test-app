@@ -1,11 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Двеи</title>
+  <title>Двери ХИТ-С | Intecron</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1></h1>
+  <header class="topbar">
+    <div class="logo">INTECRON</div>
+    <div class="tagline">Особое внимание к деталям</div>
+  </header>
+
+  <section class="hero">
+    <h1>КВАРТИРНАЯ ДВЕРЬ</h1>
+    <div class="model">ХИТ-С</div>
+    <div class="slogan">стиль • безопасность • надёжность</div>
+  </section>
+
+  <main>
+    <div class="card">
+      <div class="badge">Базовая комплектация</div>
+      <table id="base"></table>
+      <div class="price-box">
+        <div>Базовая цена: <b id="base-price">—</b></div>
+        <div>Доплаты: <b id="surcharge">—</b></div>
+        <div class="big">Итого: <span id="total-top">—</span></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="showPanel('pay')">Оплата</button>
+      <button class="btn alt" onclick="showPanel('change')">Изменить комплектацию</button>
+    </div>
+
+    <div class="card panel" id="change">
+      <div class="badge">Изменить комплектацию</div>
+      <p class="note">Вариант 1 — базовый, доплаты нет. Вариант 2 — доплата <span class="per-item">—</span> за каждый выбранный параметр.</p>
+      <div id="options"></div>
+    </div>
+
+    <div class="card panel" id="pay">
+      <div class="badge">Оплата</div>
+      <div class="summary" id="summary"></div>
+      <button class="btn" onclick="alert('Переход к оплате (демо)')">Перейти к оплате</button>
+    </div>
+
+    <div class="totalbar">
+      <div>
+        <div>Итого к оплате</div>
+        <div class="sum" id="total">—</div>
+      </div>
+      <button class="btn" onclick="showPanel('pay')">Оплата</button>
+    </div>
+  </main>
+
+  <footer>INTECRON • Квартирные двери • Цены уточняйте у менеджера</footer>
+
+  <script>
+    const fmt = n => Number(n).toLocaleString('ru-RU') + ' ₽';
+    let items = [];
+
+    async function init() {
+      items = await (await fetch('/api/items')).json();
+
+      document.getElementById('base').innerHTML = items
+        .filter(i => i.v1)
+        .map(i => `<tr><td>${i.name}</td><td>${i.v1}</td></tr>`)
+        .join('');
+
+      document.getElementById('options').innerHTML = items.map(i => {
+        const control = i.v2
+          ? `<select data-id="${i.id}" onchange="recalc()">
+              <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
+              <option value="2">Вариант 2 (доплата): ${i.v2}</option>
+            </select>`
+          : `<span class="none">Вариант 2 не предусмотрен. Базовое значение: ${i.v1 || '—'}</span>`;
+        return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
+      }).join('');
+
+      recalc();
+    }
+
+    async function recalc() {
+      const choices = {};
+      document.querySelectorAll('select[data-id]').forEach(s => choices[s.dataset.id] = s.value);
+
+      const res = await fetch('/api/calc', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({choices})
+      });
+      render(await res.json());
+    }
+
+    function render(d) {
+      document.getElementById('base-price').textContent = fmt(d.base);
+      document.getElementById('surcharge').textContent = fmt(d.surcharge);
+      document.getElementById('total-top').textContent = fmt(d.total);
+      document.getElementById('total').textContent = fmt(d.total);
+      document.querySelectorAll('.per-item').forEach(e => e.textContent = fmt(d.per_item));
+
+      let html = d.paid.length
+        ? `<p>Выбрано вариантов 2: ${d.paid.length}</p><ul>` +
+          d.paid.map(p => `<li>${p.name}: ${p.value} (+${fmt(d.per_item)})</li>`).join('') + '</ul>'
+        : '<p>Выбрана базовая комплектация. Доплат нет.</p>';
+      html += `<p><b>Итого к оплате: ${fmt(d.total)}</b></p>`;
+      document.getElementById('summary').innerHTML = html;
+    }
+
+    function showPanel(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+      document.getElementById(id).classList.add('open');
+      document.getElementById(id).scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+
+    init();
+  </script>
 </body>
 </html>
