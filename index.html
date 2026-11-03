@@ -68,17 +68,14 @@
     async function init() {
       data = await (await fetch('data.json')).json();
 
-      document.getElementById('base').innerHTML = data.items
-        .filter(i => i.v1)
-        .map(i => `<tr><td>${i.name}</td><td>${i.v1}</td></tr>`)
-        .join('');
+      renderBase();
 
       document.getElementById('options').innerHTML = data.items.map(i => {
         const control = i.v2
           ? `<select data-id="${i.id}" onchange="recalc()">
-               <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
-               <option value="2">Вариант 2 (доплата): ${i.v2}</option>
-             </select>`
+              <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
+              <option value="2">Вариант 2 (доплата): ${i.v2}</option>
+            </select>`
           : `<span class="none">Вариант 2 не предусмотрен. Базовое значение: ${i.v1 || '—'}</span>`;
         return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
       }).join('');
@@ -88,7 +85,22 @@
     }
 
     // Расчёт в браузере: базовая цена + доплата за каждый параметр с вариантом 2
+    // Базовая комплектация: там, где выбран вариант 2, показываем его значение.
+    // Если ничего не менять, таблица выглядит так же, как базовая комплектация.
+    function renderBase() {
+      const chosen = {};
+      document.querySelectorAll('select[data-id]').forEach(s => chosen[s.dataset.id] = s.value);
+      document.getElementById('base').innerHTML = data.items
+        .filter(i => i.v1 || (chosen[i.id] === '2' && i.v2))
+        .map(i => {
+          const value = (chosen[i.id] === '2' && i.v2) ? i.v2 : i.v1;
+          return `<tr><td>${i.name}</td><td>${value}</td></tr>`;
+        })
+        .join('');
+    }
+
     function recalc() {
+      renderBase();
       const paid = [];
       document.querySelectorAll('select[data-id]').forEach(s => {
         if (s.value === '2') {
