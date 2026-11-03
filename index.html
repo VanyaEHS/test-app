@@ -19,7 +19,7 @@
   </section>
 
   <div class="door-photo-wrap">
-    <img class="door-photo" src="door.png" alt="Квартирная дверь ХИТ-С">
+    <img id="door-img" class="door-photo" src="door.png" alt="Квартирная дверь ХИТ-С">
   </div>
 
   <main>
@@ -76,9 +76,9 @@
       document.getElementById('options').innerHTML = data.items.map(i => {
         const control = i.v2
           ? `<select data-id="${i.id}" onchange="recalc()">
-              <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
-              <option value="2">Вариант 2 (доплата): ${i.v2}</option>
-            </select>`
+               <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
+               <option value="2">Вариант 2 (доплата): ${i.v2}</option>
+             </select>`
           : `<span class="none">Вариант 2 не предусмотрен. Базовое значение: ${i.v1 || '—'}</span>`;
         return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
       }).join('');
@@ -96,6 +96,9 @@
           paid.push({name: item.name, value: item.v2});
         }
       });
+      // Если выбран «черный» во внутренней отделке, показываем чёрную дверь
+      const blackChosen = paid.some(p => p.name === 'Отделка внутри цвет' && p.value === 'черный');
+      document.getElementById('door-img').src = blackChosen ? 'door_black.png' : 'door.png';
       const surcharge = paid.length * data.surcharge;
       const total = data.base_price + surcharge;
 
