@@ -35,6 +35,7 @@
 
     <div class="actions">
       <button class="btn" onclick="showPanel('pay')">Оплата</button>
+      <button class="btn" onclick="showPanel('wholesale')">Оплата опт</button>
       <button class="btn alt" onclick="showPanel('change')">Изменить комплектацию</button>
     </div>
 
@@ -50,12 +51,27 @@
       <button class="btn" onclick="alert('Переход к оплате (демо)')">Перейти к оплате</button>
     </div>
 
+    <div class="card panel" id="wholesale">
+      <div class="badge">Оплата опт</div>
+      <p class="note">Выбранная комплектация одинакова для всех дверей. Скидка действует от 20 дверей: 10%.</p>
+      <div class="qty">
+        <button onclick="changeQty(-1)">−</button>
+        <span id="qty">1</span>
+        <button onclick="changeQty(1)">+</button>
+      </div>
+      <div class="summary" id="wholesale-summary"></div>
+      <button class="btn" onclick="alert('Переход к оплате опта (демо)')">Перейти к оплате</button>
+    </div>
+
     <div class="totalbar">
       <div>
         <div>Итого к оплате</div>
         <div class="sum" id="total">—</div>
       </div>
-      <button class="btn" onclick="showPanel('pay')">Оплата</button>
+      <div class="bar-buttons">
+        <button class="btn" onclick="showPanel('pay')">Оплата</button>
+        <button class="btn" onclick="showPanel('wholesale')">Оплата опт</button>
+      </div>
     </div>
   </main>
 
@@ -64,6 +80,40 @@
   <script>
     const fmt = n => Number(n).toLocaleString('ru-RU') + ' ₽';
     let data = null;
+    let perDoor = 0;   // цена одной двери с выбранной комплектацией
+    let qty = 1;
+
+    // Скидки для опта: от какого количества дверей и сколько процентов.
+    // Чтобы добавить новые ступени, допишите строки в этот список.
+    const DISCOUNT_TIERS = [
+      {from: 20, percent: 10},
+    ];
+
+    function discountFor(n) {
+      let percent = 0;
+      DISCOUNT_TIERS.forEach(t => { if (n >= t.from) percent = t.percent; });
+      return percent;
+    }
+
+    function changeQty(delta) {
+      qty = Math.max(1, qty + delta);
+      renderWholesale();
+    }
+
+    function renderWholesale() {
+      const percent = discountFor(qty);
+      const subtotal = perDoor * qty;
+      const discount = Math.round(subtotal * percent / 100);
+      const total = subtotal - discount;
+      document.getElementById('qty').textContent = qty;
+      document.getElementById('wholesale-summary').innerHTML =
+        `<p>Цена одной двери: <b>${fmt(perDoor)}</b></p>` +
+        `<p>Количество дверей: <b>${qty}</b></p>` +
+        `<p>Сумма без скидки: <b>${fmt(subtotal)}</b></p>` +
+        `<p>Скидка: <b>${percent}%</b> (${fmt(discount)})</p>` +
+        `<p><b>Итого к оплате: ${fmt(total)}</b></p>` +
+        (percent === 0 ? '<p class="tier">Скидка действует от 20 дверей.</p>' : '');
+    }
 
     async function init() {
       data = await (await fetch('data.json')).json();
@@ -73,9 +123,9 @@
       document.getElementById('options').innerHTML = data.items.map(i => {
         const control = i.v2
           ? `<select data-id="${i.id}" onchange="recalc()">
-              <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
-              <option value="2">Вариант 2 (доплата): ${i.v2}</option>
-            </select>`
+               <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
+               <option value="2">Вариант 2 (доплата): ${i.v2}</option>
+             </select>`
           : `<span class="none">Вариант 2 не предусмотрен. Базовое значение: ${i.v1 || '—'}</span>`;
         return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
       }).join('');
@@ -113,6 +163,8 @@
       document.getElementById('door-img').src = blackChosen ? 'door_black.png' : 'door.png';
       const surcharge = paid.length * data.surcharge;
       const total = data.base_price + surcharge;
+      perDoor = total;
+      renderWholesale();
 
       document.getElementById('base-price').textContent = fmt(data.base_price);
       document.getElementById('surcharge').textContent = fmt(surcharge);

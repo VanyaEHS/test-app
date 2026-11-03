@@ -48,3 +48,9 @@ footer { background: var(--dark); color: #ddd; text-align: center; padding: 24px
 
 .door-photo-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 24px 0; }
 .door-photo { display: block; width: 100%; height: auto; border-radius: 10px; }
+
+.qty { display: flex; align-items: center; gap: 14px; margin: 12px 0 18px; }
+.qty button { width: 44px; height: 44px; border: 2px solid var(--red); background: #fff; color: var(--red); font-size: 22px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+.qty span { font-size: 22px; font-weight: 700; min-width: 48px; text-align: center; }
+.tier { font-size: 13px; color: var(--muted); }
+.bar-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
