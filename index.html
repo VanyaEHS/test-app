@@ -59,17 +59,17 @@
 
   <script>
     const fmt = n => Number(n).toLocaleString('ru-RU') + ' ₽';
-    let items = [];
+    let data = null;
 
     async function init() {
-      items = await (await fetch('/api/items')).json();
+      data = await (await fetch('data.json')).json();
 
-      document.getElementById('base').innerHTML = items
+      document.getElementById('base').innerHTML = data.items
         .filter(i => i.v1)
         .map(i => `<tr><td>${i.name}</td><td>${i.v1}</td></tr>`)
         .join('');
 
-      document.getElementById('options').innerHTML = items.map(i => {
+      document.getElementById('options').innerHTML = data.items.map(i => {
         const control = i.v2
           ? `<select data-id="${i.id}" onchange="recalc()">
               <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
@@ -79,33 +79,32 @@
         return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
       }).join('');
 
+      document.querySelectorAll('.per-item').forEach(e => e.textContent = fmt(data.surcharge));
       recalc();
     }
 
-    async function recalc() {
-      const choices = {};
-      document.querySelectorAll('select[data-id]').forEach(s => choices[s.dataset.id] = s.value);
-
-      const res = await fetch('/api/calc', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({choices})
+    // Расчёт в браузере: базовая цена + доплата за каждый параметр с вариантом 2
+    function recalc() {
+      const paid = [];
+      document.querySelectorAll('select[data-id]').forEach(s => {
+        if (s.value === '2') {
+          const item = data.items.find(i => i.id === s.dataset.id);
+          paid.push({name: item.name, value: item.v2});
+        }
       });
-      render(await res.json());
-    }
+      const surcharge = paid.length * data.surcharge;
+      const total = data.base_price + surcharge;
 
-    function render(d) {
-      document.getElementById('base-price').textContent = fmt(d.base);
-      document.getElementById('surcharge').textContent = fmt(d.surcharge);
-      document.getElementById('total-top').textContent = fmt(d.total);
-      document.getElementById('total').textContent = fmt(d.total);
-      document.querySelectorAll('.per-item').forEach(e => e.textContent = fmt(d.per_item));
+      document.getElementById('base-price').textContent = fmt(data.base_price);
+      document.getElementById('surcharge').textContent = fmt(surcharge);
+      document.getElementById('total-top').textContent = fmt(total);
+      document.getElementById('total').textContent = fmt(total);
 
-      let html = d.paid.length
-        ? `<p>Выбрано вариантов 2: ${d.paid.length}</p><ul>` +
-          d.paid.map(p => `<li>${p.name}: ${p.value} (+${fmt(d.per_item)})</li>`).join('') + '</ul>'
+      let html = paid.length
+        ? `<p>Выбрано вариантов 2: ${paid.length}</p><ul>` +
+          paid.map(p => `<li>${p.name}: ${p.value} (+${fmt(data.surcharge)})</li>`).join('') + '</ul>'
         : '<p>Выбрана базовая комплектация. Доплат нет.</p>';
-      html += `<p><b>Итого к оплате: ${fmt(d.total)}</b></p>`;
+      html += `<p><b>Итого к оплате: ${fmt(total)}</b></p>`;
       document.getElementById('summary').innerHTML = html;
     }
 
