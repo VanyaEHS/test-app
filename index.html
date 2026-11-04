@@ -123,9 +123,9 @@
       document.getElementById('options').innerHTML = data.items.map(i => {
         const control = i.v2
           ? `<select data-id="${i.id}" onchange="recalc()">
-               <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
-               <option value="2">Вариант 2 (доплата): ${i.v2}</option>
-             </select>`
+              <option value="1" selected>Вариант 1 (база): ${i.v1}</option>
+              <option value="2">Вариант 2 (доплата): ${i.v2}</option>
+            </select>`
           : `<span class="none">Вариант 2 не предусмотрен. Базовое значение: ${i.v1 || '—'}</span>`;
         return `<details><summary>${i.name}</summary><div class="pick">${control}</div></details>`;
       }).join('');
