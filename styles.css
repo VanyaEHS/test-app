@@ -54,3 +54,4 @@ footer { background: var(--dark); color: #ddd; text-align: center; padding: 24px
 .qty span { font-size: 22px; font-weight: 700; min-width: 48px; text-align: center; }
 .tier { font-size: 13px; color: var(--muted); }
 .bar-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.demo { font-size: 13px; color: var(--muted); margin: 12px 0 0; }

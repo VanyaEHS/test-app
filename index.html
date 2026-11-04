@@ -48,7 +48,8 @@
     <div class="card panel" id="pay">
       <div class="badge">Оплата</div>
       <div class="summary" id="summary"></div>
-      <button class="btn" onclick="alert('Переход к оплате (демо)')">Перейти к оплате</button>
+      <button class="btn" onclick="demoPay('pay-msg')">Перейти к оплате</button>
+      <p class="demo" id="pay-msg"></p>
     </div>
 
     <div class="card panel" id="wholesale">
@@ -60,7 +61,8 @@
         <button onclick="changeQty(1)">+</button>
       </div>
       <div class="summary" id="wholesale-summary"></div>
-      <button class="btn" onclick="alert('Переход к оплате опта (демо)')">Перейти к оплате</button>
+      <button class="btn" onclick="demoPay('wholesale-msg')">Перейти к оплате</button>
+      <p class="demo" id="wholesale-msg"></p>
     </div>
 
     <div class="totalbar">
@@ -177,6 +179,12 @@
         : '<p>Выбрана базовая комплектация. Доплат нет.</p>';
       html += `<p><b>Итого к оплате: ${fmt(total)}</b></p>`;
       document.getElementById('summary').innerHTML = html;
+    }
+
+    // Демо-оплата: сообщение выводится прямо на странице, без системного окна
+    function demoPay(id) {
+      document.getElementById(id).textContent =
+        'Оплата пока демонстрационная. Здесь подключается платёжная система.';
     }
 
     function showPanel(id) {
